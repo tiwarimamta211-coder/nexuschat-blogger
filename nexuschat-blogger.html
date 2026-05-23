@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexusChat Pro | Secure Room Suite</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f1f5f9; padding: 16px; }
+  .wrap { max-width: 960px; margin: 0 auto; display: flex; gap: 20px; align-items: flex-start; }
+
+  /* SIDEBAR */
+  .sidebar { flex: 0 0 220px; background: #0f172a; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; min-height: 560px; }
+  .sidebar-header { padding: 20px; border-bottom: 1px solid #1e293b; }
+  .logo { font-size: 15px; font-weight: 800; color: #818cf8; display: flex; align-items: center; gap: 8px; }
+  .logo span { font-size: 18px; }
+  .user-list { padding: 16px; flex: 1; }
+  .list-title { font-size: 10px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
+  .user-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 13px; color: #cbd5e1; }
+  .dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; flex-shrink: 0; }
+  .mod-notice { padding: 14px 16px; background: rgba(239,68,68,0.08); font-size: 11px; color: #f87171; border-top: 1px solid #1e293b; display: flex; align-items: center; gap: 6px; }
+
+  /* CHAT MAIN */
+  .chat-main { flex: 1; background: #1e293b; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; min-height: 560px; }
+  .chat-header { padding: 16px 22px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; background: rgba(15,23,42,0.7); }
+  .chat-header h3 { font-size: 14px; font-weight: 700; color: #f1f5f9; }
+  .chat-header p  { font-size: 11px; color: #64748b; margin-top: 2px; }
+  .gear-btn { background: none; border: none; color: #64748b; cursor: pointer; font-size: 16px; }
+  .gear-btn:hover { color: #94a3b8; }
+
+  /* MESSAGES */
+  #chat-window { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; max-height: 400px; scrollbar-width: thin; scrollbar-color: #334155 transparent; }
+  .message { max-width: 78%; padding: 10px 14px; border-radius: 14px; line-height: 1.5; font-size: 13px; color: #f1f5f9; }
+  .msg-meta { font-size: 10px; color: rgba(255,255,255,0.5); margin-bottom: 4px; display: flex; gap: 8px; }
+  .user-name { font-weight: 800; color: #818cf8; }
+  .received { background: #0f172a; align-self: flex-start; border-bottom-left-radius: 3px; }
+  .sent { background: #4f46e5; align-self: flex-end; border-bottom-right-radius: 3px; }
+  .sent .msg-meta { color: rgba(255,255,255,0.6); }
+  .sent .user-name { color: #fff; }
+  .system-msg { align-self: center; font-size: 11px; color: #64748b; background: rgba(255,255,255,0.04); padding: 4px 14px; border-radius: 20px; }
+  .system-msg.warn { color: #f87171; }
+  .moderated-msg { font-style: italic; opacity: 0.6; }
+
+  /* INPUT */
+  .input-area { padding: 16px 20px; border-top: 1px solid #334155; }
+  .input-wrapper { background: #0f172a; border: 1px solid #334155; border-radius: 12px; display: flex; align-items: center; padding: 6px 6px 6px 14px; transition: border 0.2s; }
+  .input-wrapper:focus-within { border-color: #4f46e5; }
+  .input-wrapper input { flex: 1; background: transparent; border: none; outline: none; color: #f1f5f9; font-size: 13px; font-family: inherit; padding: 6px 0; }
+  .input-wrapper input::placeholder { color: #475569; }
+  .send-btn { background: #4f46e5; color: #fff; border: none; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; transition: background 0.2s; flex-shrink: 0; }
+  .send-btn:hover { background: #4338ca; }
+
+  @media (max-width: 600px) {
+    .wrap { flex-direction: column; }
+    .sidebar { flex: 0 0 auto; min-height: auto; }
+    #chat-window { max-height: 300px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo"><span>📡</span> NexusChat</div>
+    </div>
+    <div class="user-list">
+      <div class="list-title">Online Members — 3</div>
+      <div class="user-item"><div class="dot"></div> Admin_Mod <span style="font-size:10px;color:#475569">(Mod)</span></div>
+      <div class="user-item"><div class="dot"></div> Sarah_Dev</div>
+      <div class="user-item"><div class="dot"></div> You</div>
+    </div>
+    <div class="mod-notice">🛡 Active Moderation Enabled</div>
+  </aside>
+
+  <!-- CHAT MAIN -->
+  <main class="chat-main">
+    <div class="chat-header">
+      <div>
+        <h3># Community-Lounge</h3>
+        <p>Public discussion and support</p>
+      </div>
+      <button class="gear-btn" title="Settings">⚙</button>
+    </div>
+
+    <div id="chat-window">
+      <div class="system-msg">Welcome to the secure chat room. Please follow community guidelines.</div>
+      <div class="message received">
+        <div class="msg-meta"><span class="user-name">Sarah_Dev</span> 11:42 AM</div>
+        <div>Has anyone checked out the new API documentation for 2026?</div>
+      </div>
+    </div>
+
+    <div class="input-area">
+      <div class="input-wrapper">
+        <input type="text" id="msgInput" placeholder="Message #Community-Lounge" onkeypress="handleKey(event)">
+        <button class="send-btn" onclick="sendMessage()">&#9993;</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  var bannedWords = ['spam', 'scam', 'badword', 'attack'];
+  var userName = 'You';
+
+  function handleKey(e) {
+    if (e.key === 'Enter') sendMessage();
+  }
+
+  function sendMessage() {
+    var input = document.getElementById('msgInput');
+    var chatWindow = document.getElementById('chat-window');
+    var rawText = input.value.trim();
+    if (!rawText) return;
+
+    // Moderation
+    var isModerated = false;
+    var filtered = rawText;
+    bannedWords.forEach(function(word) {
+      var re = new RegExp(word, 'gi');
+      if (re.test(filtered)) { filtered = filtered.replace(re, '****'); isModerated = true; }
+    });
+
+    // Time
+    var time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    // Message bubble
+    var msgDiv = document.createElement('div');
+    msgDiv.className = 'message sent';
+    msgDiv.innerHTML =
+      '<div class="msg-meta"><span class="user-name">' + userName + '</span> ' + time + '</div>' +
+      '<div class="' + (isModerated ? 'moderated-msg' : '') + '">' + escHtml(filtered) + '</div>';
+    chatWindow.appendChild(msgDiv);
+
+    // Moderation notice
+    if (isModerated) {
+      setTimeout(function() {
+        var sysDiv = document.createElement('div');
+        sysDiv.className = 'system-msg warn';
+        sysDiv.innerText = '⚠ System: Your message was filtered for community safety.';
+        chatWindow.appendChild(sysDiv);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+      }, 500);
+    }
+
+    input.value = '';
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+  }
+
+  function escHtml(t) {
+    return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+</script>
+</body>
+</html>
